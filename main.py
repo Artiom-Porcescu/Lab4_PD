@@ -23,6 +23,13 @@ class MainWindow(QWidget):
 
         self.setLayout(layout)
 
+    def validate_date(self, date_text):
+        try:
+            datetime.strptime(date_text, '%Y/%m/%d')
+            return True
+        except ValueError:
+            return False
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MainWindow()
