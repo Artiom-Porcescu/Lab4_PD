@@ -30,6 +30,29 @@ class MainWindow(QWidget):
         except ValueError:
             return False
 
+    def get_data(self):
+        date = self.date_input.text()
+
+        if self.validate_date(date):
+            file_path, _ = QFileDialog.getOpenFileName(self, 'Выберите файл dataset.csv', '', 'CSV files (*.csv)')
+
+            if file_path:
+                data_for_date = []
+                with open(file_path, newline='') as csvfile:
+                    reader = csv.reader(csvfile)
+                    next(reader)  # Пропускаем заголовок, если он есть
+                    data_for_date = [row[1] for row in reader if row[0] == date]
+
+                if data_for_date:
+                    result_text = f"Данные для даты {date}: {data_for_date[0]}"
+                    QMessageBox.information(self, "Результат", result_text)
+                else:
+                    QMessageBox.warning(self, "Ошибка", "Данные для введенной даты отсутствуют.")
+            else:
+                QMessageBox.warning(self, "Ошибка", "Файл не выбран.")
+        else:
+            QMessageBox.warning(self, "Ошибка", "Неверный формат даты. Введите в формате YYYY/MM/DD.")
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MainWindow()
